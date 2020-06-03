@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import "./index.scss";
 import logo from "../../images/logo.png";
-import { List, InputItem, Button, WingBlank } from 'antd-mobile';
+import { List, InputItem, Button, WingBlank, WhiteSpace } from 'antd-mobile';
+import VerificationCode from "../../component/verificationCode";
 
 
 const Form = (props) => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [verificationCode, setVerificationCode] = useState(""); //输入框的验证码
+    const [canvasCode, setCanvasCode] = useState(""); //canvas生成的验证码
+    const [validateCode, setValidateCode] = useState(false);
 
     // 用户名改变
     const changeUserName = value => {
@@ -19,9 +23,25 @@ const Form = (props) => {
         setPassword(value);
     }
 
+    // 输入框验证码改变
+    const changeVerificationCode = value => {
+        setVerificationCode(value);
+    }
+
     // 点击登录
     const handleClick = () => {
-        console.log(userName, password);
+        if (verificationCode.toLowerCase() === canvasCode.toLowerCase()) {
+            setValidateCode(false)
+        } else {
+            setValidateCode(true)
+        }
+        console.log(userName, password, verificationCode);
+    }
+
+    // 获取子组件传过来的验证码
+    const getCode = (value) => {
+        console.log(value);
+        setCanvasCode(value);
     }
 
     return (
@@ -38,6 +58,19 @@ const Form = (props) => {
                     placeholder="请输入密码"
                     onChange={value => changePassword(value)}
                 >密码</InputItem>
+
+                {/* 验证码 */}
+                <List.Item>
+                    <VerificationCode getCode={value => getCode(value)} />
+                </List.Item>
+                <WhiteSpace />
+                <InputItem
+                    clear
+                    error={validateCode}
+                    placeholder="请输入验证码"
+                    onChange={value => changeVerificationCode(value)}
+                >验证码</InputItem>
+
                 <List.Item>
                     <Button
                         type="primary"
