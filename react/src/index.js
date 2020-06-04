@@ -4,8 +4,6 @@ import App from './App';
 import 'antd-mobile/dist/antd-mobile.css'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
   document.getElementById('root')
 );

@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import "./index.scss";
 import logo from "../../images/logo.png";
 import { List, InputItem, Button, WingBlank, WhiteSpace } from 'antd-mobile';
-import VerificationCode from "../../component/verificationCode";
+import VerificationCode from "../../component/verificationCode";//验证码组件
 
 
 const Form = (props) => {
@@ -18,7 +18,7 @@ const Form = (props) => {
         setUserName(value);
     }
 
-    // 用户名改变
+    // 密码改变
     const changePassword = value => {
         setPassword(value);
     }

@@ -20,7 +20,7 @@ const VerificationCode = (props) => {
         let characterArr = allCharacter();
         let str = ""; // 验证码
         for (let i = 0; i < 4; i++) {
-            let index = randomNum(0, characterArr.length);
+            let index = randomNum(0, characterArr.length - 1);
             str += characterArr[index];
         }
 
@@ -28,9 +28,9 @@ const VerificationCode = (props) => {
         //设置4个内容 将canvas 平分成4分 然后让内容在1/4的空间旋转缩放
         //原理 ：每次都是位移旋转之后再回复原位
         for (let i = 0; i < str.length; i++) {
-            let colorR = randomNum(0, 256);
-            let colorG = randomNum(0, 256);
-            let colorB = randomNum(0, 256);
+            let colorR = randomNum(0, 255);
+            let colorG = randomNum(0, 255);
+            let colorB = randomNum(0, 255);
             let deg = randomNum(-30, 30);
             let x = randomNum(20, 30);
             // 设置颜色 和字体大小以及样式
