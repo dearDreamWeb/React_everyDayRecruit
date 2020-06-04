@@ -5,6 +5,7 @@ import logo from "../../images/logo.png";
 import { List, InputItem, Button, WingBlank, WhiteSpace, Picker, Toast } from 'antd-mobile';
 import VerificationCode from "../../component/verificationCode"; //验证码组件
 import { createForm } from 'rc-form';
+import axios from "axios";
 
 
 const Form = (props) => {
@@ -26,13 +27,21 @@ const Form = (props) => {
 
     // 点击注册
     const handleClick = () => {
-        props.form.validateFields({ force: true }, (error) => {
-            if (!error) {
-                console.log(props.form.getFieldsValue());
-            } else {
-                Toast.info("请确认表单内容全部正确");
-            }
-        });
+        props.form.validateFields().then(res => {
+            axios({
+                method: "post",
+                url: "/api/register",
+                data: res
+            }).then(res => {
+                if (res.data.status === 0) {
+                    Toast.success(res.data.message, 3, () => props.history.push("/login"));
+                } else {
+                    Toast.error(res.data.message);
+                }
+            }).catch(err => console.log(err));
+        }).catch(() => {
+            Toast.fail("请确认表单内容全部正确");
+        })
     }
 
     // 获取子组件传过来的验证码

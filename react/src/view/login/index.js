@@ -2,61 +2,114 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import "./index.scss";
 import logo from "../../images/logo.png";
-import { List, InputItem, Button, WingBlank, WhiteSpace } from 'antd-mobile';
+import { List, InputItem, Button, WingBlank, WhiteSpace, Toast } from 'antd-mobile';
 import VerificationCode from "../../component/verificationCode";//验证码组件
+import { createForm } from 'rc-form';
+import axios from "axios";
 
 
 const Form = (props) => {
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-    const [verificationCode, setVerificationCode] = useState(""); //输入框的验证码
     const [canvasCode, setCanvasCode] = useState(""); //canvas生成的验证码
-    const [validateCode, setValidateCode] = useState(false);
-
-    // 用户名改变
-    const changeUserName = value => {
-        setUserName(value);
-    }
-
-    // 密码改变
-    const changePassword = value => {
-        setPassword(value);
-    }
-
-    // 输入框验证码改变
-    const changeVerificationCode = value => {
-        setVerificationCode(value);
-    }
+    const { getFieldProps, getFieldError } = props.form;
 
     // 点击登录
     const handleClick = () => {
-        if (verificationCode.toLowerCase() === canvasCode.toLowerCase()) {
-            setValidateCode(false)
-        } else {
-            setValidateCode(true)
-        }
-        console.log(userName, password, verificationCode);
+        props.form.validateFields().then(res => {
+            axios({
+                method: "post",
+                url: "/api/login",
+                data: res
+            }).then(res => {
+                if (res.data.status === 0) {
+                    Toast.success(res.data.message, 3, () => props.history.push("/"));
+                } else {
+                    Toast.fail(res.data.message);
+                }
+            }).catch(err => console.log(err));
+        }).catch(() => {
+            Toast.info("请确认表单内容全部正确")
+        })
+
+        getCode();
     }
 
     // 获取子组件传过来的验证码
     const getCode = (value) => {
-        console.log(value);
         setCanvasCode(value);
     }
+
+    // 校验用户名
+    const validateUserName = (rule, value, callback) => {
+        // 仅允许输入英文和数字
+        const reg = /^\w{3,8}$/;
+        if (reg.test(value)) {
+            callback();
+        } else {
+            callback(new Error("仅允许英文、数字长度为3到8"));
+        }
+    }
+
+    // 校验密码
+    const validatePassword = (rule, value, callback) => {
+        //匹配是否有特殊字符（包括空格）,允许的特殊字符@,.
+        const reg = /^[\w@,.]{6,16}$/;
+        if (reg.test(value)) {
+            callback();
+        } else {
+            callback(new Error("仅允许英文、数字和特殊字符@ , .长度为6到16"))
+        }
+    }
+
+    // 校验验证码
+    const validateVerificationCode = (rule, value, callback) => {
+        if (value.toLowerCase() === canvasCode.toLowerCase()) {
+            callback();
+        } else {
+            callback(new Error("验证码错误"));
+        }
+    }
+
 
     return (
         <WingBlank>
             <List>
+                {/* 用户名 */}
                 <InputItem
+                    {...getFieldProps('userName', {
+                        validate: [{
+                            trigger: "onBlur",
+                            rules: [
+                                { validator: validateUserName }
+                            ],
+                        }],
+
+                    })}
+                    error={!!getFieldError('userName')}
+                    onErrorClick={() => {
+                        Toast.info(getFieldError('userName'), 1);
+                    }}
                     clear
                     placeholder="请输入用户名"
-                    onChange={value => changeUserName(value)}
                 >用户名</InputItem>
+
+                {/* 密码 */}
                 <InputItem
+                    {...getFieldProps('password', {
+                        validate: [{
+                            trigger: "onBlur",
+                            rules: [
+                                { validator: validatePassword }
+                            ],
+                        }],
+
+                    })}
+                    error={!!getFieldError('password')}
+                    onErrorClick={() => {
+                        Toast.info(getFieldError('password'), 1);
+                    }}
                     type="password"
                     clear
                     placeholder="请输入密码"
-                    onChange={value => changePassword(value)}
                 >密码</InputItem>
 
                 {/* 验证码 */}
@@ -65,10 +118,21 @@ const Form = (props) => {
                 </List.Item>
                 <WhiteSpace />
                 <InputItem
+                    {...getFieldProps('verificationCode', {
+                        validate: [{
+                            trigger: "onBlur",
+                            rules: [
+                                { validator: validateVerificationCode },
+                            ],
+                        }],
+
+                    })}
+                    error={!!getFieldError('verificationCode')}
+                    onErrorClick={() => {
+                        Toast.info(getFieldError('verificationCode'), 1);
+                    }}
                     clear
-                    error={validateCode}
                     placeholder="请输入验证码"
-                    onChange={value => changeVerificationCode(value)}
                 >验证码</InputItem>
 
                 <List.Item>
@@ -88,7 +152,7 @@ const Form = (props) => {
     )
 
 }
-const Form1 = withRouter(Form)
+const Form1 = createForm()(withRouter(Form));
 const Login = () => {
 
     return (<div className="login">
