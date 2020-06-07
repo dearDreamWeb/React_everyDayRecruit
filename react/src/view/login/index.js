@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import "./index.scss";
-import logo from "../../images/logo.png";
+import logo from "../../assets/images/logo/logo.png";
 import { List, InputItem, Button, WingBlank, WhiteSpace, Toast } from 'antd-mobile';
 import VerificationCode from "../../component/verificationCode";//验证码组件
+import DiyHeader from "../../component/header";  //头部组件
 import { createForm } from 'rc-form';
 import axios from "axios";
 
 
 const Form = (props) => {
     const [canvasCode, setCanvasCode] = useState(""); //canvas生成的验证码
-    const { getFieldProps, getFieldError } = props.form;
+    const { getFieldProps, getFieldError, validateFields } = props.form;
 
     // 点击登录
     const handleClick = () => {
-        props.form.validateFields().then(res => {
+        validateFields().then(res => {
             axios({
                 method: "post",
                 url: "/api/login",
@@ -27,10 +28,8 @@ const Form = (props) => {
                 }
             }).catch(err => console.log(err));
         }).catch(() => {
-            Toast.info("请确认表单内容全部正确")
+            Toast.info("请确认表单内容全部正确");
         })
-
-        getCode();
     }
 
     // 获取子组件传过来的验证码
@@ -51,6 +50,7 @@ const Form = (props) => {
 
     // 校验密码
     const validatePassword = (rule, value, callback) => {
+
         //匹配是否有特殊字符（包括空格）,允许的特殊字符@,.
         const reg = /^[\w@,.]{6,16}$/;
         if (reg.test(value)) {
@@ -156,7 +156,7 @@ const Form1 = createForm()(withRouter(Form));
 const Login = () => {
 
     return (<div className="login">
-        <header className="login_header">天天直聘</header>
+        <DiyHeader title="天天直聘" />
         <section className="logo">
             <img src={logo} alt="logo" />
         </section>

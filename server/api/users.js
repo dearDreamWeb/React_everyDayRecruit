@@ -22,8 +22,7 @@ module.exports = (router, crud) => {
 
     // 注册
     router.post("/register", (req, res) => {
-        let userName = req.body.userName;
-        let password = req.body.password;
+        let { userName, password, avatar, job, companyName, salary, jobRequire, wantJob, selfIntroduction } = req.body;
         let userType = req.body.userType.join("");
         // 先判断是否有该用户名，有的话返回提示，没有的话，添加数据到数据库
         crud("SELECT * FROM `users` WHERE userName = ?", [userName], data => {
@@ -31,10 +30,26 @@ module.exports = (router, crud) => {
                 let userId = require("../randomId")();
                 // 要插入的数据
                 let data = {
-                    userId: userId,
-                    userName: userName,
-                    password: password,
-                    userType: userType
+                    userId,
+                    userName,
+                    password,
+                    userType,
+                    avatar
+                }
+                // 判断用户类型，1是老板，2是大神，根据用户类型选择数据插入
+                if (userType === "1") {
+                    data = Object.assign({}, data, {
+                        job,    // 招聘岗位
+                        companyName, // 公司名称
+                        salary, // 职位薪资
+                        jobRequire  // 职位要求
+                    })
+                } else {
+                    data = Object.assign({}, data, {
+                        userType, //用户类型
+                        wantJob, //求职岗位
+                        selfIntroduction //个人介绍
+                    })
                 }
                 crud("INSERT INTO `users` set ?", data, insertData => {
                     res.json({

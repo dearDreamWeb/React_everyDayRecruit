@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import "./index.scss";
-import logo from "../../images/logo.png";
+import logo from "../../assets/images/logo/logo.png";
 import { List, InputItem, Button, WingBlank, WhiteSpace, Picker, Toast } from 'antd-mobile';
 import VerificationCode from "../../component/verificationCode"; //验证码组件
+import DiyHeader from "../../component/header";  //头部组件
 import { createForm } from 'rc-form';
-import axios from "axios";
 
 
 const Form = (props) => {
@@ -25,20 +25,27 @@ const Form = (props) => {
     const { getFieldProps, getFieldError } = props.form;
 
 
-    // 点击注册
+    // 点击注册，表单内容无误的话，判断useType是1还是0,1的话跳转到老板信息页面，0就跳转到大神信息页面
     const handleClick = () => {
         props.form.validateFields().then(res => {
-            axios({
-                method: "post",
-                url: "/api/register",
-                data: res
-            }).then(res => {
-                if (res.data.status === 0) {
-                    Toast.success(res.data.message, 3, () => props.history.push("/login"));
-                } else {
-                    Toast.error(res.data.message);
-                }
-            }).catch(err => console.log(err));
+            if (res.userType.join("") === "1") {
+                props.history.push({
+                    pathname: "/boss_info",
+                    state: {
+                        userType: res.userType.join(""),
+                        formData: res
+                    }
+                });
+            } else {
+                props.history.push({
+                    pathname: "/dashen_info",
+                    state: {
+                        userType: res.userType.join(""),
+                        formData: res
+                    }
+                });
+            }
+
         }).catch(() => {
             Toast.fail("请确认表单内容全部正确");
         })
@@ -217,7 +224,7 @@ const Form1 = createForm()(withRouter(Form))
 const Register = () => {
 
     return (<div className="register">
-        <header className="register_header">天天直聘</header>
+        <DiyHeader title="天天直聘" />
         <section className="logo">
             <img src={logo} alt="logo" />
         </section>

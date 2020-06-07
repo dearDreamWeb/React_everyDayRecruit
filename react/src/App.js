@@ -1,9 +1,11 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "./view/home";
 import Login from "./view/login";
 import Register from "./view/register";
+import BossInfo from "./view/bossInfo";
+import DashenInfo from "./view/dashenInfo";
 
 function App() {
   return (
@@ -13,6 +15,18 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
+          <Route exact path="/boss_info" render={props => {
+            // 判断是否是从注册页面跳转过来的并且userType是1
+            return ((props.location.state && props.location.state.userType === "1")
+              ? <BossInfo />
+              : <Redirect to="/" />)
+          }} />
+          <Route exact path="/dashen_info" render={props => {
+            // 判断是否是从注册页面跳转过来的并且userType是0
+            return ((props.location.state && props.location.state.userType === "0")
+              ? <DashenInfo />
+              : <Redirect to="/" />)
+          }} />
         </Switch>
       </BrowserRouter>
     </div>
