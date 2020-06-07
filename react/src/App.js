@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { decrypt } from "./rsa"; //rsa解密
 import Home from "./view/home";
 import Login from "./view/login";
 import Register from "./view/register";
@@ -12,7 +13,14 @@ function App() {
     <div className="app">
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" render={() => {
+            // 判断用户是否登录，登录就显示Home组件，没登录就回到登录界面登录
+            const userInfo = JSON.parse(decrypt(window.localStorage.getItem("userInfo")));
+            const isLogin = parseInt(window.localStorage.getItem("isLogin"));
+            return (isLogin && userInfo)
+              ? < Home userInfo={userInfo} />
+              : <Redirect to="/login" />
+          }} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/boss_info" render={props => {

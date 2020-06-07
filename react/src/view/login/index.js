@@ -7,6 +7,7 @@ import VerificationCode from "../../component/verificationCode";//验证码组�
 import DiyHeader from "../../component/header";  //头部组件
 import { createForm } from 'rc-form';
 import axios from "axios";
+import { encrypt } from "../../rsa"; //rsa加密
 
 
 const Form = (props) => {
@@ -22,6 +23,9 @@ const Form = (props) => {
                 data: res
             }).then(res => {
                 if (res.data.status === 0) {
+                    // 本地存储是否登录，登录的用户id和用户类型
+                    window.localStorage.setItem("isLogin", 1);
+                    window.localStorage.setItem("userInfo", encrypt(JSON.stringify(res.data.userInfo)));
                     Toast.success(res.data.message, 3, () => props.history.push("/"));
                 } else {
                     Toast.fail(res.data.message);
