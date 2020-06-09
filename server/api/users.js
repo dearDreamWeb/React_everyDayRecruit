@@ -16,7 +16,7 @@ module.exports = (router, crud) => {
             })
             // 判断cookie中是否有sid
             if (cookiesObj.hasOwnProperty("sid")) {
-                if (cookiesObj.sid === req.session.auto_loginId && req.body.userId === req.session.userInfo.userId) {
+                if (cookiesObj.sid === req.session.auto_loginId ) {
                     res.json({
                         status: 0,
                         userInfo: req.session.userInfo
@@ -102,5 +102,16 @@ module.exports = (router, crud) => {
         })
 
     })
+
+
+    // 退出登录
+    router.get("/loginOut",(req,res) => {
+        // 注销session的所有值
+        req.session.destroy();
+        res.json({
+            status:0,
+            message: "退出登录成功"
+        })
+    }) 
 
 }

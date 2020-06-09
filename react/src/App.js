@@ -25,8 +25,7 @@ function App() {
           {/* 判断是否自动登录，不是返回登录界面，是的话重定向到/user */}
           <Route exact path="/" render={() => {
             const localStorage_userInfo = JSON.parse(decrypt(window.localStorage.getItem("userInfo")));
-            const localStorage_isLogin = parseInt(window.localStorage.getItem("isLogin"));
-            return (localStorage_isLogin && localStorage_userInfo)
+            return localStorage_userInfo
               ? < Redirect to="/user" />
               : <Redirect to="/login" />
           }} />

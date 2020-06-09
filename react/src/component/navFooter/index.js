@@ -15,7 +15,7 @@ const NavFooter = props => {
     // props值的类型
     NavFooter.propTypes = {
         navListData: PropTypes.array.isRequired,
-        userType: PropTypes.number.isRequired
+        userInfo: PropTypes.object
     }
 
     return (<div className="nav_footer">
@@ -28,7 +28,7 @@ const NavFooter = props => {
                         icon={{ uri: require(`./images/${item.icon}.png`) }}
                         selectedIcon={{ uri: require(`./images/${item.icon}-selected.png`) }}
                         selected={pathname === item.path} //如果当前路径和item中的path一样，则是被选中
-                        onPress = {()=>props.history.push(item.path)}
+                        onPress={() => props.history.push({ pathname: item.path, state: { userInfo: props.userInfo } })}
                     />)
             })}
         </TabBar>

@@ -23,8 +23,7 @@ const Form = (props) => {
                 data: res
             }).then(res => {
                 if (res.data.status === 0) {
-                    // 本地存储是否登录，登录的用户id和用户类型
-                    window.localStorage.setItem("isLogin", 1);
+                    // 本地存储登录的用户id和用户类型
                     window.localStorage.setItem("userInfo", encrypt(JSON.stringify(res.data.userInfo)));
                     Toast.success(res.data.message, 3, () => props.history.push("/"));
                 } else {
