@@ -1,6 +1,8 @@
 .nav_footer {
   position: fixed;
-  width: 100vw;
+  z-index: 2;
   left: 0;
   bottom: 0;
+  width: 100vw;
+  height: 60px;
 }

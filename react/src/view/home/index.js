@@ -3,10 +3,11 @@ import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import DiyHeader from "../../component/header";     // 头部标题组件
 import NavFooter from "../../component/navFooter";  // 底部导航组件
 import Personal from "../../component/personal";    // 个人中心组件
-import UserList from "../../component/userList";    // 个人中心组件
+import UsersList from "../../component/userList";    // 用户列表组件
 import PropTypes from "prop-types";
 import axios from "axios";
 import { encrypt } from "../../rsa"; //rsa加密
+
 
 const Home = props => {
     // props值校验
@@ -86,12 +87,14 @@ const Home = props => {
     }
 
     return (<div className="home">
-        <DiyHeader title={title} />
-        <Switch>
-            <Route exact path="/user" render={() => <Redirect to={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} />} />
-            <Route exact path={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} component={UserList}  />
-            <Route exact path="/user/personal" component={Personal} userInfo={userInfo} />
-        </Switch>
+        <DiyHeader title={title} isFixed={true} />
+        <section style={{ marginTop: "60px", marginBottom: "60px", overflow: "hidden" }}>
+            <Switch>
+                <Route exact path="/user" render={() => <Redirect to={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} />} />
+                <Route exact path={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} render={() => <UsersList userType={userType} />} />
+                <Route exact path="/user/personal" component={Personal} userInfo={userInfo} />
+            </Switch>
+        </section>
         <NavFooter navListData={navListData} userInfo={userInfo} />
     </div>)
 }

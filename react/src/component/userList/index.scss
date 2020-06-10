@@ -1,0 +1,17 @@
+.user_list {
+  .card-wrap {
+      margin-top: 10px;
+    .item {
+      padding-bottom: 8px;
+    }
+    .description {
+      display: flex;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      line-height: 1.3;
+      .description_title {
+        flex: 0 0 3rem;
+      }
+    }
+  }
+}

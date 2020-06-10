@@ -16,7 +16,7 @@ module.exports = (router, crud) => {
             })
             // 判断cookie中是否有sid
             if (cookiesObj.hasOwnProperty("sid")) {
-                if (cookiesObj.sid === req.session.auto_loginId ) {
+                if (cookiesObj.sid === req.session.auto_loginId) {
                     res.json({
                         status: 0,
                         userInfo: req.session.userInfo
@@ -105,13 +105,30 @@ module.exports = (router, crud) => {
 
 
     // 退出登录
-    router.get("/loginOut",(req,res) => {
+    router.get("/loginOut", (req, res) => {
         // 注销session的所有值
         req.session.destroy();
         res.json({
-            status:0,
+            status: 0,
             message: "退出登录成功"
         })
-    }) 
+    })
+
+
+    // 获取用户信息，根据参数userType判断大神或者老板
+    router.get("/userList", (req, res) => {
+        // 如果req.query.userType为1，说明用户是老板，应该查询userType为0的大神列表，req.query.userType为0则相反
+        let userType = req.query.userType === "1" ? 0 : 1;
+        crud("SELECT * FROM `users` WHERE userType = ?", [userType], data => {
+            // 把密码去掉再发给前端
+            data.forEach(item => {
+                item.password = null;
+            })
+            res.json({
+                status: 0,
+                userData: data
+            })
+        })
+    })
 
 }

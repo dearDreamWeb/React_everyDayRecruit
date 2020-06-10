@@ -39,11 +39,17 @@ const Personal = props => {
                 <List.Item.Brief>职位：{userInfo.wantJob || userInfo.job}</List.Item.Brief>
                 <List.Item.Brief>
                     <div
-                        style={{
-                            wordWrap: "break-word",
-                            whiteSpace: "pre-wrap"
-                        }}>
-                        简介：{userInfo.selfIntroduction || userInfo.jobRequire}
+                        style={{ display: "flex" }}
+                    >
+                        <span
+                            style={{ flex:"0 0 3rem" }}
+                        >简介：</span>
+                        <p
+                            style={{
+                                wordWrap: "break-word",
+                                whiteSpace: "pre-wrap"
+                            }}
+                        >{userInfo.selfIntroduction || userInfo.jobRequire}</p>
                     </div>
                 </List.Item.Brief>
 

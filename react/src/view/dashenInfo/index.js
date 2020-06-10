@@ -14,7 +14,7 @@ const DashenInfo = props => {
 
     // 公共的校验方法
     const validateCommon = (rule, value, callback) => {
-        const reg = /[@,;'"$?<>`\s]/;
+        const reg = /[@,'"$?<>`]/;
         if (!reg.test(value) && value) {
             callback();
         } else {
@@ -29,7 +29,6 @@ const DashenInfo = props => {
      * 提交的data是结合注册界面的路由传递过来的参数，一起发送到后端
      */
     const handleClick = () => {
-        console.log(props)
         validateFields().then(res => {
             // 判断用户是否选择了头像，没有选择提醒用户选择头像
             if (avatar) {
