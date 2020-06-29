@@ -7,6 +7,7 @@ import Login from "./view/login";
 import Register from "./view/register";
 import BossInfo from "./view/bossInfo";
 import DashenInfo from "./view/dashenInfo";
+import Chat from "./view/chat";
 
 function App() {
   // 判断用户是否登录，登录就显示Home组件，没登录就回到登录界面登录
@@ -44,6 +45,7 @@ function App() {
               ? <DashenInfo />
               : <Redirect to="/" />)
           }} />
+          <Route exact path="/chat/:userId" component={Chat} />
         </Switch>
       </BrowserRouter>
     </div>

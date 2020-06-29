@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
 import { Card, WingBlank } from 'antd-mobile';
 import axios from "axios";
 import "./index.scss";
@@ -41,7 +42,13 @@ const UsersList = props => {
                         transitionName="animated"
                         key={index}
                     >
-                        <Card full className="card-wrap animate__animated animate__backInDown">
+                        <Card
+                            full
+                            className="card-wrap animate__animated animate__backInDown"
+                            onClick={() =>
+                                props.history.push({ pathname: `/chat/${item.userId}`, state: { userInfo: item } })
+                            }
+                        >
                             <Card.Header
                                 thumb={require(`../../assets/images/avatar/${item.avatar}.png`)}
                                 extra={<span>{item.userName}</span>}
@@ -69,4 +76,4 @@ const UsersList = props => {
     </div>)
 }
 
-export default UsersList;
+export default withRouter(UsersList);

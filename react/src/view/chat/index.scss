@@ -1,0 +1,51 @@
+@import "../../scss/index.scss";
+.chat {
+  position: relative;
+  height: 100vh;
+  background-color: $white;
+  // 返回按钮
+  .back_icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    height: 60px;
+  }
+
+  // 聊天列表
+  .lists {
+    position: absolute;
+    top: 60px;
+    width: 100vw;
+    .chat_content{
+      position: relative;
+      display:inline-block;
+      margin-left: 10px;
+      padding: 0 10px;
+      height: 2rem;
+      line-height: 2rem;
+      background: #e5e5e5;
+      border-radius: 5px;
+      &::before{
+        position: absolute;
+        left: -5px;
+        top: 20%;
+        display: inline-block;
+        content: "";
+        width: 10px;
+        height: 10px;
+        transform: rotate(45deg);
+        background: #e5e5e5;
+      }
+    }
+  }
+
+  // 底部发送消息
+  .sendMsg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    border-top: 1px solid $diy_gray;
+  }
+}

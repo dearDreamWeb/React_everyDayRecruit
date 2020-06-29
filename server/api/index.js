@@ -17,4 +17,7 @@ module.exports = (express, app) => {
 
     // 用户登录和注册
     require("./users")(router, crud);
+
+    // 用户登录和注册
+    require("./chat")(router, crud);
 }
