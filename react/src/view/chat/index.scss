@@ -5,7 +5,7 @@
   background-color: $white;
   // 返回按钮
   .back_icon {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     z-index: 3;
@@ -16,17 +16,23 @@
   .lists {
     position: absolute;
     top: 60px;
+    padding-bottom: 44px;
     width: 100vw;
-    .chat_content{
+    .chat_time {
+      text-align: center;
+      font-size: 12px;
+      color: #ada9a9;
+    }
+    .chat_content {
       position: relative;
-      display:inline-block;
+      display: inline-block;
       margin-left: 10px;
       padding: 0 10px;
       height: 2rem;
       line-height: 2rem;
       background: #e5e5e5;
       border-radius: 5px;
-      &::before{
+      &::before {
         position: absolute;
         left: -5px;
         top: 20%;
@@ -38,14 +44,22 @@
         background: #e5e5e5;
       }
     }
+    // 改变antd-mobile的List.Item中的样式
+    .am-list-body,
+    .am-list-line {
+      &::after {
+        display: none !important;
+      }
+    }
   }
 
   // 底部发送消息
   .sendMsg {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100vw;
+    height: 44px;
     border-top: 1px solid $diy_gray;
   }
 }

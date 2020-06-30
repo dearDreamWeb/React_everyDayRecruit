@@ -4,18 +4,27 @@ import { Icon, InputItem, Toast, List } from "antd-mobile";
 import "./index.scss";
 import axios from "axios";
 import socket from "../../socketIo_client/index";
+import moment from 'moment'; //日期格式整理工具
 
 const Chat = props => {
+    const [chatList, setChatList] = useState([]); // 聊天信息列表
     const [title, setTitle] = useState(""); // 头部显示聊天的用户名
     const [chatContent, setChatContent] = useState(""); // 输入消息框里的内容
     const [self_userInfo, setSelfUserInfo] = useState({}); // 登录的本用户的信息
     const chat_userInfo = props.location.state.userInfo;    //聊天对象的信息
+    const [self_avatar, setSelfAvatar] = useState(""); // 本用户的头像地址
+    const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
 
 
     useEffect(() => {
         getChatData();
         setTitle(chat_userInfo.userName);
+        socketInit();
     }, [])
+
+    useEffect(() => {
+        socketInit();
+    }, [self_userInfo])
 
     // 获取用户聊天信息
     const getChatData = () => {
@@ -27,8 +36,9 @@ const Chat = props => {
             }
         }).then(res => {
             if (res.data.status === 0) {
-                console.log(res.data);
-                setSelfUserInfo(res.data.self_userInfo)
+                setChatList(res.data.chat_data);
+                setSelfUserInfo(res.data.self_userInfo);
+                setSelfAvatar(require(`../../assets/images/avatar/${res.data.self_userInfo.avatar}.png`))
             } else {
                 // 用户未登录，返回登录页面
                 Toast.fail(res.data.message, 3, () => props.history.push("/login"));
@@ -38,18 +48,37 @@ const Chat = props => {
 
     // 发送消息
     const sendMsg = () => {
+        setChatContent(""); //清空输入框
+        if (chatContent.trim() !== "") {
+            // 要发送的数据
+            const sendData = {
+                from: self_userInfo.userId,
+                to: chat_userInfo.userId,
+                chat_content: chatContent
+            }
 
-        // 要发送的数据
-        const sendData = {
-            from: self_userInfo.userId,
-            to: chat_userInfo.userId,
-            content: chatContent
+            // setChatList(chatList.concat([sendData]));
+            // setChatContent(""); //清空输入框
+
+            // 向服务器发送数据
+            socket.emit("message", JSON.stringify(sendData));
+        } else {
+            Toast.info("发送的内容不能为空");
         }
-        // console.log(chatContent);
-        socket.on("message", data => console.log(data));
-        
-        // 向服务器发送数据
-        socket.emit("message", JSON.stringify(sendData));
+    }
+
+    // 初始化socketIo和接收消息
+    const socketInit = () => {
+        // 初始化
+        socket.emit("init", self_userInfo.userId);
+
+        // 接收消息
+        socket.on("message", data => {
+            let newData = JSON.parse(data);
+            console.log(newData)
+            setChatList([...chatList, newData]);
+            
+        });
     }
 
     return (<div className="chat">
@@ -69,10 +98,20 @@ const Chat = props => {
         {/* 聊天消息 */}
         <main className="lists">
             <List>
-                <List.Item>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="头像" />
-                    <span className="chat_content">aaa</span>
-                </List.Item>
+                {chatList.map((item, index) => {
+                    return (
+                        <List.Item key={index}>
+                            {/* 消息时间 */}
+                            <p className="chat_time">{moment(new Date(item.created_time)).format('YYYY-MM-DD HH:mm:ss')}</p>
+                            <img
+                                src={item.from === self_userInfo.userId ? self_avatar : chat_avatar}
+                                alt="头像"
+                            />
+                            <span className="chat_content">{item.chat_content}</span>
+                        </List.Item>
+                    )
+                })}
+
             </List>
         </main>
 
