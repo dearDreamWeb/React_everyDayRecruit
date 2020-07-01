@@ -25,7 +25,7 @@ module.exports = app => {
 
             crud("INSERT INTO `chat` SET ?", { from, to, chat_content, created_time }, () => {
                 // 将消息私发给指定的客户端
-                socket.to(usersObj[msgData.from]).emit('message', JSON.stringify({ from, to, chat_content, created_time }));
+                socket.emit('message', JSON.stringify({ from, to, chat_content, created_time }));
                 socket.to(usersObj[msgData.to]).emit('message', JSON.stringify({ from, to, chat_content, created_time }));
 
             })

@@ -4,7 +4,6 @@ import { Card, WingBlank } from 'antd-mobile';
 import axios from "axios";
 import "./index.scss";
 import "animate.css";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 const UsersList = props => {
     const [usersData, setUsersData] = useState([]);
@@ -34,14 +33,6 @@ const UsersList = props => {
         <WingBlank>
             {usersData.map((item, index) => {
                 return (
-                    <ReactCSSTransitionGroup
-                        transitionEnter={true}
-                        transitionLeave={true}
-                        transitionEnterTimeout={1000}
-                        transitionLeaveTimeout={500}
-                        transitionName="animated"
-                        key={index}
-                    >
                         <Card
                             full
                             className="card-wrap animate__animated animate__backInDown"
@@ -69,7 +60,6 @@ const UsersList = props => {
                                 </div>
                             </Card.Body>
                         </Card>
-                    </ReactCSSTransitionGroup>
                 )
             })}
         </WingBlank>

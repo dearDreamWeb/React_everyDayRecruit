@@ -23,27 +23,62 @@
       font-size: 12px;
       color: #ada9a9;
     }
-    .chat_content {
-      position: relative;
-      display: inline-block;
-      margin-left: 10px;
-      padding: 0 10px;
-      height: 2rem;
-      line-height: 2rem;
-      background: #e5e5e5;
-      border-radius: 5px;
-      &::before {
-        position: absolute;
-        left: -5px;
-        top: 20%;
+    // 别人的消息，消息靠左
+    .chat_left {
+      .chat_content {
+        position: relative;
         display: inline-block;
-        content: "";
-        width: 10px;
-        height: 10px;
-        transform: rotate(45deg);
+        margin-left: 10px;
+        padding: 0 10px;
+        height: 2rem;
+        line-height: 2rem;
         background: #e5e5e5;
+        border-radius: 5px;
+        &::before {
+          position: absolute;
+          left: -5px;
+          top: 20%;
+          display: inline-block;
+          content: "";
+          width: 10px;
+          height: 10px;
+          transform: rotate(45deg);
+          background: #e5e5e5;
+        }
       }
     }
+
+    // 本人的消息，消息靠右
+    .chat_right {
+      display: flex;
+      justify-content: flex-end;
+      .avatar {
+        order: 1;
+        margin-left: 10px;
+      }
+      .chat_content {
+        position: relative;
+        display: inline-block;
+        margin-left: 10px;
+        padding: 0 10px;
+        height: 2rem;
+        line-height: 2rem;
+        background: #e5e5e5;
+        border-radius: 5px;
+        &::before {
+          position: absolute;
+          right: -5px;
+          top: 20%;
+          display: inline-block;
+          content: "";
+          width: 10px;
+          height: 10px;
+          transform: rotate(45deg);
+          background: #e5e5e5;
+        }
+      }
+    }
+
     // 改变antd-mobile的List.Item中的样式
     .am-list-body,
     .am-list-line {

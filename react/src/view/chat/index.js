@@ -5,6 +5,7 @@ import "./index.scss";
 import axios from "axios";
 import socket from "../../socketIo_client/index";
 import moment from 'moment'; //日期格式整理工具
+import "animate.css";
 
 const Chat = props => {
     const [chatList, setChatList] = useState([]); // 聊天信息列表
@@ -15,10 +16,9 @@ const Chat = props => {
     const [self_avatar, setSelfAvatar] = useState(""); // 本用户的头像地址
     const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
 
-
+    // 页面加载完成
     useEffect(() => {
         getChatData();
-        setTitle(chat_userInfo.userName);
         socketInit();
     }, [])
 
@@ -26,8 +26,15 @@ const Chat = props => {
         socketInit();
     }, [self_userInfo])
 
+    useEffect(() => {
+        // 滚动条滚到底部
+        document.scrollingElement.scrollTop = window.innerHeight;
+    })
+
     // 获取用户聊天信息
     const getChatData = () => {
+
+        setTitle(chat_userInfo.userName);
         axios({
             method: "get",
             url: "/api/chat_init",
@@ -57,9 +64,6 @@ const Chat = props => {
                 chat_content: chatContent
             }
 
-            // setChatList(chatList.concat([sendData]));
-            // setChatContent(""); //清空输入框
-
             // 向服务器发送数据
             socket.emit("message", JSON.stringify(sendData));
         } else {
@@ -75,9 +79,7 @@ const Chat = props => {
         // 接收消息
         socket.on("message", data => {
             let newData = JSON.parse(data);
-            console.log(newData)
             setChatList([...chatList, newData]);
-            
         });
     }
 
@@ -101,13 +103,27 @@ const Chat = props => {
                 {chatList.map((item, index) => {
                     return (
                         <List.Item key={index}>
-                            {/* 消息时间 */}
-                            <p className="chat_time">{moment(new Date(item.created_time)).format('YYYY-MM-DD HH:mm:ss')}</p>
-                            <img
-                                src={item.from === self_userInfo.userId ? self_avatar : chat_avatar}
-                                alt="头像"
-                            />
-                            <span className="chat_content">{item.chat_content}</span>
+                            {/* 设置动画 */}
+                            <div
+                                className={
+                                    item.from === self_userInfo.userId
+                                        ? "animate__animated animate__lightSpeedInRight"
+                                        : "animate__animated animate__lightSpeedInLeft"
+                                }
+                            >
+                                {/* 消息时间 */}
+                                <p className="chat_time">{moment(new Date(item.created_time)).format('YYYY-MM-DD HH:mm:ss')}</p>
+
+                                {/* 判断消息是否是本人，是本人就给chat_right的class名，让消息靠右 */}
+                                <div className={item.from === self_userInfo.userId ? "chat_right" : "chat_left"}>
+                                    <img
+                                        className="avatar"
+                                        src={item.from === self_userInfo.userId ? self_avatar : chat_avatar}
+                                        alt="头像"
+                                    />
+                                    <span className="chat_content">{item.chat_content}</span>
+                                </div>
+                            </div>
                         </List.Item>
                     )
                 })}
