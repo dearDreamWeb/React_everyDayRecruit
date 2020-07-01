@@ -94,7 +94,23 @@
     bottom: 0;
     left: 0;
     width: 100vw;
-    height: 44px;
+    // height: 44px;
     border-top: 1px solid $diy_gray;
+    .emoji {
+      margin-right: 10px;
+      line-height: 1.1rem;
+    }
+    // 所有表情
+    .emojis_wrap {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      justify-items: center;
+      align-items: center;
+      background-color: $white;
+      .emojis_item {
+        padding: 10px 0;
+        font-size: 20px;
+      }
+    }
   }
 }

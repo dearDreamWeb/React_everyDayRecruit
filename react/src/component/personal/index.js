@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Result, List, Button, Toast } from "antd-mobile";
 import axios from "axios";
 import PropTypes from "prop-types";
 
 const Personal = props => {
-    const [userInfo, setUserInfo] = useState(props.location.state.userInfo);
+    const userInfo = props.location.state.userInfo;
 
     // props值校验
     Personal.prototype = {
@@ -42,7 +42,7 @@ const Personal = props => {
                         style={{ display: "flex" }}
                     >
                         <span
-                            style={{ flex:"0 0 3rem" }}
+                            style={{ flex: "0 0 3rem" }}
                         >简介：</span>
                         <p
                             style={{

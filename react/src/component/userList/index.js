@@ -9,7 +9,6 @@ const UsersList = props => {
     const [usersData, setUsersData] = useState([]);
     const userType = props.userType;
 
-
     useEffect(() => {
         initData();
     }, [])
@@ -33,33 +32,34 @@ const UsersList = props => {
         <WingBlank>
             {usersData.map((item, index) => {
                 return (
-                        <Card
-                            full
-                            className="card-wrap animate__animated animate__backInDown"
-                            onClick={() =>
-                                props.history.push({ pathname: `/chat/${item.userId}`, state: { userInfo: item } })
-                            }
-                        >
-                            <Card.Header
-                                thumb={require(`../../assets/images/avatar/${item.avatar}.png`)}
-                                extra={<span>{item.userName}</span>}
-                            />
-                            <Card.Body>
-                                <div className="item">职位：{item.wantJob || item.job}</div>
-                                <div
-                                    className="item"
-                                    style={{ display: item.companyName ? "block" : "none" }}
-                                >公司：{item.companyName}</div>
-                                <div
-                                    className="item"
-                                    style={{ display: item.salary ? "block" : "none" }}
-                                >月薪：{item.salary}</div>
-                                <div className="item description">
-                                    <span className="description_title">描述：</span>
-                                    <p>{item.selfIntroduction || item.jobRequire}</p>
-                                </div>
-                            </Card.Body>
-                        </Card>
+                    <Card
+                        key={index}
+                        full
+                        className="card-wrap animate__animated animate__backInDown"
+                        onClick={() =>
+                            props.history.push({ pathname: `/chat/${item.userId}`, state: { userInfo: item } })
+                        }
+                    >
+                        <Card.Header
+                            thumb={require(`../../assets/images/avatar/${item.avatar}.png`)}
+                            extra={<span>{item.userName}</span>}
+                        />
+                        <Card.Body>
+                            <div className="item">职位：{item.wantJob || item.job}</div>
+                            <div
+                                className="item"
+                                style={{ display: item.companyName ? "block" : "none" }}
+                            >公司：{item.companyName}</div>
+                            <div
+                                className="item"
+                                style={{ display: item.salary ? "block" : "none" }}
+                            >月薪：{item.salary}</div>
+                            <div className="item description">
+                                <span className="description_title">描述：</span>
+                                <p>{item.selfIntroduction || item.jobRequire}</p>
+                            </div>
+                        </Card.Body>
+                    </Card>
                 )
             })}
         </WingBlank>

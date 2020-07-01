@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DiyHeader from "../../component/header";     // 头部标题组件
 import { Icon, InputItem, Toast, List } from "antd-mobile";
 import "./index.scss";
@@ -6,6 +6,7 @@ import axios from "axios";
 import socket from "../../socketIo_client/index";
 import moment from 'moment'; //日期格式整理工具
 import "animate.css";
+
 
 const Chat = props => {
     const [chatList, setChatList] = useState([]); // 聊天信息列表
@@ -15,6 +16,17 @@ const Chat = props => {
     const chat_userInfo = props.location.state.userInfo;    //聊天对象的信息
     const [self_avatar, setSelfAvatar] = useState(""); // 本用户的头像地址
     const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
+    const [isShowEmojis, setIsShowEmojis] = useState(false); // 是否显示表情
+    // 表情
+    const emojis = [
+        "😀", "😄", "😁", "😆", "😅", "🤣", "😂", "🙃",
+        "😉", "😇", "🥰", "😍", "😜", "🤪", "😝", "🤑",
+        "🤐", "🙄", "🤫", "😷", "😴", "🤮", "🥵", "😵"]
+
+    // 设置ref
+    const sendMsgRef = useRef();
+    const listsRef = useRef();
+
 
     // 页面加载完成
     useEffect(() => {
@@ -29,7 +41,15 @@ const Chat = props => {
     useEffect(() => {
         // 滚动条滚到底部
         document.scrollingElement.scrollTop = window.innerHeight;
-    })
+    }, [chatList])
+
+
+    useEffect(() => {
+        // 当切换显示和隐藏表情的时候，将消息列表的padding-bottom值变大，并将滚动条到底部
+        listsRef.current.style.paddingBottom = sendMsgRef.current.offsetHeight + "px";
+        // 滚动条滚到底部
+        document.scrollingElement.scrollTop = window.innerHeight;
+    }, [isShowEmojis])
 
     // 获取用户聊天信息
     const getChatData = () => {
@@ -83,6 +103,12 @@ const Chat = props => {
         });
     }
 
+
+    // 切换隐藏或显示表情
+    const showEmojis = () => {
+        setIsShowEmojis(!isShowEmojis);
+    }
+
     return (<div className="chat">
 
         {/* 返回按钮 */}
@@ -98,7 +124,7 @@ const Chat = props => {
         <DiyHeader title={title} isFixed={true} />
 
         {/* 聊天消息 */}
-        <main className="lists">
+        <main className="lists" ref={listsRef}>
             <List>
                 {chatList.map((item, index) => {
                     return (
@@ -132,15 +158,32 @@ const Chat = props => {
         </main>
 
         {/* 底部发送消息 */}
-        <footer className="sendMsg">
+        <footer className="sendMsg" ref={sendMsgRef}>
             <InputItem
                 placeholder="请输入"
                 maxLength={100}
-                extra={"发送"}
+                extra={
+                    <span>
+                        <span className="emoji" onClick={() => showEmojis()}>😀</span>
+                        <span onClick={() => sendMsg()}>发送</span>
+                    </span>
+                }
                 value={chatContent}
                 onChange={value => setChatContent(value)}
-                onExtraClick={() => sendMsg()}
             />
+
+            {/* 是否显示表情 */}
+            {isShowEmojis ? (<div className="emojis_wrap">
+                {emojis.map((item, index) => {
+                    return (
+                        <div
+                            key={index}
+                            className="emojis_item"
+                            onClick={() => setChatContent(chatContent + item)}
+                        >{item}</div>
+                    )
+                })}
+            </div>) : null}
         </footer>
     </div>)
 }

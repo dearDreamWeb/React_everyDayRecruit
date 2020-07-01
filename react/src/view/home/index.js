@@ -15,8 +15,8 @@ const Home = props => {
         localStorage_userInfo: PropTypes.object.isRequired
     }
     const [userInfo, setUserInfo] = useState({});
-    const [userType, setUserType] = useState(props.localStorage_userInfo.userType); //用户类型
     const [title, setTitle] = useState("");
+    const userType = props.localStorage_userInfo.userType; //用户类型
     const navListData = [{
         path: "/user/dashen_list",
         title: "大神列表",
