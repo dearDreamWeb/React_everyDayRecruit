@@ -1,16 +1,15 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import DiyHeader from "../../component/header";     // 头部标题组件
 import NavFooter from "../../component/navFooter";  // 底部导航组件
 import Personal from "../../component/personal";    // 个人中心组件
 import UsersList from "../../component/userList";    // 用户列表组件
+import ChatMessage from "../../component/chatMessage";    // 消息列表组件
 import PropTypes from "prop-types";
 import axios from "axios";
 import { encrypt } from "../../rsa"; //rsa加密
-import { ContextData } from "../../useReducer";
 
 const Home = props => {
-    const { state,dispatch } = useContext(ContextData);
     // props值校验
     Home.prototype = {
         localStorage_userInfo: PropTypes.object.isRequired
@@ -46,8 +45,6 @@ const Home = props => {
     }]
     useEffect(() => {
         initUserData();
-        dispatch({type:"addData"})
-        console.log(state)
     }, [])
 
     useEffect(() => {
@@ -95,6 +92,7 @@ const Home = props => {
             <Switch>
                 <Route exact path="/user" render={() => <Redirect to={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} />} />
                 <Route exact path={userType === 1 ? "/user/dashen_list" : "/user/boss_list"} render={() => <UsersList userType={userType} />} />
+                <Route exact path="/user/message" component={ChatMessage} userInfo={userInfo} />
                 <Route exact path="/user/personal" component={Personal} userInfo={userInfo} />
             </Switch>
         </section>

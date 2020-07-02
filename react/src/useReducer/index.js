@@ -15,6 +15,11 @@ const reducer = (state, action) => {
             window.sessionStorage.setItem("userList", JSON.stringify(action.userList));
             window.sessionStorage.setItem("chatList", JSON.stringify(action.chatList));
             return { userList: action.userList, chatList: action.chatList }
+        case "addChatList":
+            const newChatList = [action.newChat, ...state.chatList]
+            // 将数据存到sessionStorage里面
+            window.sessionStorage.setItem("chatList", JSON.stringify(newChatList));
+            return { ...state, chatList: newChatList }
         default:
             return state
     }

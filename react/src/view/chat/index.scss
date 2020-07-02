@@ -86,6 +86,11 @@
         display: none !important;
       }
     }
+    .am-list-body div:not(:last-child) .am-list-line,
+    .am-list-item:not(:last-child) .am-list-line,
+    .am-list-body {
+      border: none;
+    }
   }
 
   // 底部发送消息

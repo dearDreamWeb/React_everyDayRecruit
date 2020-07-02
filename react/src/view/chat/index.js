@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import DiyHeader from "../../component/header";     // 头部标题组件
 import { Icon, InputItem, Toast, List } from "antd-mobile";
 import "./index.scss";
@@ -6,17 +6,20 @@ import axios from "axios";
 import socket from "../../socketIo_client/index";
 import moment from 'moment'; //日期格式整理工具
 import "animate.css";
+import { ContextData } from "../../useReducer";
 
 
 const Chat = props => {
+    const { dispatch } = useContext(ContextData);
     const [chatList, setChatList] = useState([]); // 聊天信息列表
     const [title, setTitle] = useState(""); // 头部显示聊天的用户名
     const [chatContent, setChatContent] = useState(""); // 输入消息框里的内容
     const [self_userInfo, setSelfUserInfo] = useState({}); // 登录的本用户的信息
-    const chat_userInfo = props.location.state.userInfo;    //聊天对象的信息
     const [self_avatar, setSelfAvatar] = useState(""); // 本用户的头像地址
-    const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
     const [isShowEmojis, setIsShowEmojis] = useState(false); // 是否显示表情
+    const self_userId = props.location.state.userInfo.userId; //本用户的id
+    const chat_userInfo = props.location.state.userInfo;    //聊天对象的信息
+    const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
     // 表情
     const emojis = [
         "😀", "😄", "😁", "😆", "😅", "🤣", "😂", "🙃",
@@ -35,10 +38,6 @@ const Chat = props => {
     }, [])
 
     useEffect(() => {
-        socketInit();
-    }, [self_userInfo])
-
-    useEffect(() => {
         // 滚动条滚到底部
         document.scrollingElement.scrollTop = listsRef.current.offsetHeight;
     })
@@ -48,7 +47,7 @@ const Chat = props => {
         // 当切换显示和隐藏表情的时候，将消息列表的padding-bottom值变大，并将滚动条到底部
         listsRef.current.style.paddingBottom = sendMsgRef.current.offsetHeight + "px";
         // 滚动条滚到底部
-        document.scrollingElement.scrollTop = listsRef.current.offsetHeight+sendMsgRef.current.offsetHeight;
+        document.scrollingElement.scrollTop = listsRef.current.offsetHeight + sendMsgRef.current.offsetHeight;
     }, [isShowEmojis])
 
     // 获取用户聊天信息
@@ -59,7 +58,7 @@ const Chat = props => {
             method: "get",
             url: "/api/chat_init",
             params: {
-                userId: props.location.state.userInfo.userId
+                userId: self_userId
             }
         }).then(res => {
             if (res.data.status === 0) {
@@ -94,12 +93,14 @@ const Chat = props => {
     // 初始化socketIo和接收消息
     const socketInit = () => {
         // 初始化
-        socket.emit("init", self_userInfo.userId);
+        socket.emit("init", self_userId);
 
         // 接收消息
         socket.on("message", data => {
             let newData = JSON.parse(data);
             setChatList([...chatList, newData]);
+            // 向useReducer存值
+            dispatch({ type: "addChatList", newChat: newData })
         });
     }
 

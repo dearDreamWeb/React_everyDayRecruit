@@ -50,8 +50,8 @@ module.exports = (router, crud) => {
                         item.password = ""
                         return item;
                     })
-                    // 获取该用户的聊天数据
-                    crud("SELECT * FROM `chat` WHERE `from`=? OR `to`=? ORDER BY created_time ", [userId, userId], chatList => {
+                    // 获取该用户的聊天数据，按照时间降序
+                    crud("SELECT * FROM `chat` WHERE `from`=? OR `to`=? ORDER BY created_time desc", [userId, userId], chatList => {
                         res.json({
                             status: 0,
                             message: "登录成功",
