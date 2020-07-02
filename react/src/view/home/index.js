@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import DiyHeader from "../../component/header";     // 头部标题组件
 import NavFooter from "../../component/navFooter";  // 底部导航组件
@@ -7,9 +7,10 @@ import UsersList from "../../component/userList";    // 用户列表组件
 import PropTypes from "prop-types";
 import axios from "axios";
 import { encrypt } from "../../rsa"; //rsa加密
-
+import { ContextData } from "../../useReducer";
 
 const Home = props => {
+    const { state,dispatch } = useContext(ContextData);
     // props值校验
     Home.prototype = {
         localStorage_userInfo: PropTypes.object.isRequired
@@ -45,6 +46,8 @@ const Home = props => {
     }]
     useEffect(() => {
         initUserData();
+        dispatch({type:"addData"})
+        console.log(state)
     }, [])
 
     useEffect(() => {

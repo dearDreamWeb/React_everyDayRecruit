@@ -4,7 +4,8 @@ let pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '123456',
-    database: 'every_day_recruit'
+    database: 'every_day_recruit',
+    charset: "utf8mb4"
 })
 query = (sql, values, callback) => {
     //连接池建立链接

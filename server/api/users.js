@@ -41,10 +41,25 @@ module.exports = (router, crud) => {
                 req.session.userInfo = data[0];
                 req.session.auto_loginId = auto_loginId;
                 const { userId, userType } = data[0];
-                res.json({
-                    status: 0,
-                    message: "登录成功",
-                    userInfo: { userId, userType }
+                // 获取用户列表的
+                const userListType = userType === 1 ? 0 : 1;
+                // 获取对应的用户列表
+                crud("SELECT *  FROM `users` WHERE userType=?", [userListType], userList => {
+                    // 把用户密码去掉
+                    userList = userList.map(item => {
+                        item.password = ""
+                        return item;
+                    })
+                    // 获取该用户的聊天数据
+                    crud("SELECT * FROM `chat` WHERE `from`=? OR `to`=? ORDER BY created_time ", [userId, userId], chatList => {
+                        res.json({
+                            status: 0,
+                            message: "登录成功",
+                            userInfo: { userId, userType },
+                            userList,
+                            chatList
+                        })
+                    })
                 })
             } else {
                 res.json({

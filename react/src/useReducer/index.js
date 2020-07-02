@@ -1,13 +1,20 @@
 import { createContext } from "react";
-let initData = { count: 0 };//初始数据
+
+let initData = {};//初始数据
+// 数据初始化时，获取sessionStorage里面的数据
+if (window.sessionStorage.getItem("userList")) {
+    initData["userList"] = JSON.parse(window.sessionStorage.getItem("userList"));
+    initData["chatList"] = JSON.parse(window.sessionStorage.getItem("chatList"));
+}
 
 // 派发事件
 const reducer = (state, action) => {
     switch (action.type) {
-        case "add":
-            return { ...state, count: state.count + 1 }
-        case "sub":
-            return { ...state, count: state.count - 1 };
+        case "initData":
+            // 将数据存到sessionStorage里面
+            window.sessionStorage.setItem("userList", JSON.stringify(action.userList));
+            window.sessionStorage.setItem("chatList", JSON.stringify(action.chatList));
+            return { userList: action.userList, chatList: action.chatList }
         default:
             return state
     }

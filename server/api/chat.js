@@ -19,4 +19,23 @@ module.exports = (router, crud) => {
         }
     })
 
+    // router.get("/getUserList_chatList", (req, res) => {
+    //     console.log(req.session.userInfo)
+    //     const self_userId = req.session.userInfo.userId;
+    //     const self_userType = req.session.userInfo.userType;
+    //     const userListType = self_userType === 1 ? 0 : 1;
+    //     crud("SELECT *  FROM `users` WHERE userType=?", [userListType], userList => {
+    //         userList = userList.map(item => {
+    //             item.password = ""
+    //         })
+    //         crud("SELECT * FROM `chat` WHERE `from`=? OR `to`=? ORDER BY created_time ", [self_userId], chatList => {
+    //             res.json({
+    //                 status: 0,
+    //                 userList,
+    //                 chatList
+    //             })
+    //         })
+    //     })
+    // })
+
 }

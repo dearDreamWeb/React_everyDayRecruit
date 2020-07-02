@@ -40,15 +40,15 @@ const Chat = props => {
 
     useEffect(() => {
         // 滚动条滚到底部
-        document.scrollingElement.scrollTop = window.innerHeight;
-    }, [chatList])
+        document.scrollingElement.scrollTop = listsRef.current.offsetHeight;
+    })
 
 
     useEffect(() => {
         // 当切换显示和隐藏表情的时候，将消息列表的padding-bottom值变大，并将滚动条到底部
         listsRef.current.style.paddingBottom = sendMsgRef.current.offsetHeight + "px";
         // 滚动条滚到底部
-        document.scrollingElement.scrollTop = window.innerHeight;
+        document.scrollingElement.scrollTop = listsRef.current.offsetHeight+sendMsgRef.current.offsetHeight;
     }, [isShowEmojis])
 
     // 获取用户聊天信息
@@ -131,11 +131,7 @@ const Chat = props => {
                         <List.Item key={index}>
                             {/* 设置动画 */}
                             <div
-                                className={
-                                    item.from === self_userInfo.userId
-                                        ? "animate__animated animate__lightSpeedInRight"
-                                        : "animate__animated animate__lightSpeedInLeft"
-                                }
+
                             >
                                 {/* 消息时间 */}
                                 <p className="chat_time">{moment(new Date(item.created_time)).format('YYYY-MM-DD HH:mm:ss')}</p>
@@ -170,6 +166,7 @@ const Chat = props => {
                 }
                 value={chatContent}
                 onChange={value => setChatContent(value)}
+                onFocus={() => setIsShowEmojis(false)}
             />
 
             {/* 是否显示表情 */}

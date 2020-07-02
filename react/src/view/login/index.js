@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import "./index.scss";
 import logo from "../../assets/images/logo/logo.png";
@@ -8,9 +8,11 @@ import DiyHeader from "../../component/header";  //头部组件
 import { createForm } from 'rc-form';
 import axios from "axios";
 import { encrypt } from "../../rsa"; //rsa加密
+import { ContextData } from "../../useReducer";
 
 
 const Form = (props) => {
+    const { dispatch } = useContext(ContextData);
     const [canvasCode, setCanvasCode] = useState(""); //canvas生成的验证码
     const { getFieldProps, getFieldError, validateFields } = props.form;
 
@@ -25,7 +27,11 @@ const Form = (props) => {
                 if (res.data.status === 0) {
                     // 本地存储登录的用户id和用户类型
                     window.localStorage.setItem("userInfo", encrypt(JSON.stringify(res.data.userInfo)));
-                    Toast.success(res.data.message, 3, () => props.history.push("/"));
+                    Toast.success(res.data.message, 2, () => props.history.push("/"));
+
+                    // 把用户列表userList和聊天列表chatList给useReducer
+                    dispatch({ type: "initData", userList: res.data.userList, chatList: res.data.chatList });
+                    
                 } else {
                     Toast.fail(res.data.message);
                 }
