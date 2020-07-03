@@ -1,0 +1,29 @@
+@import "../../scss/index.scss";
+.chat_message {
+  .lastChat_wrap {
+    display: flex;
+    align-items: center;
+    .avatar {
+      width: 30px;
+      height: 30px;
+    }
+    .main {
+      padding-left: 10px;
+      .content {
+        font-size: 20px;
+      }
+      .userName {
+        font-size: 14px;
+        color: $diy_DarkGrey;
+      }
+    }
+    .time_badge {
+      flex-grow: 1;
+      text-align: right;
+      .time {
+        font-size: 10px;
+        color: $diy_DarkGrey;
+      }
+    }
+  }
+}
