@@ -6,10 +6,11 @@ module.exports = app => {
     const io = require('socket.io')(server);
     let usersObj = {}; //存放登录的用户的socket.id
     io.on('connection', socket => {
-
         // 初始化用户
         socket.on("init", data => {
-            usersObj[data] = socket.id;
+            if (!data) {
+                usersObj[data] = socket.id;
+            }
         })
 
         // 接收发的消息
@@ -25,8 +26,8 @@ module.exports = app => {
 
             crud("INSERT INTO `chat` SET ?", { from, to, chat_content, created_time }, () => {
                 // 将消息私发给指定的客户端
-                socket.emit('message', JSON.stringify({ from, to, chat_content, created_time, read: false }));
-                socket.to(usersObj[msgData.to]).emit('message', JSON.stringify({ from, to, chat_content, created_time, read: false }));
+                socket.emit('message', JSON.stringify({ from, to, chat_content, created_time, read: 0 }));
+                socket.to(usersObj[msgData.to]).emit('message', JSON.stringify({ from, to, chat_content, created_time, read: 0 }));
 
             })
         })

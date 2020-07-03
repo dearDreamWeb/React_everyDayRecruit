@@ -3,21 +3,21 @@ import DiyHeader from "../../component/header";     // 头部标题组件
 import { Icon, InputItem, Toast, List } from "antd-mobile";
 import "./index.scss";
 import axios from "axios";
-import socket from "../../socketIo_client/index";
+import socket from "../../socketIo_client/index"; //引入socket
 import moment from 'moment'; //日期格式整理工具
 import "animate.css";
 import { ContextData } from "../../useReducer";
 
 
 const Chat = props => {
-    const { dispatch } = useContext(ContextData);
+    const { state, dispatch } = useContext(ContextData);
     const [chatList, setChatList] = useState([]); // 聊天信息列表
     const [title, setTitle] = useState(""); // 头部显示聊天的用户名
     const [chatContent, setChatContent] = useState(""); // 输入消息框里的内容
     const [self_userInfo, setSelfUserInfo] = useState({}); // 登录的本用户的信息
     const [self_avatar, setSelfAvatar] = useState(""); // 本用户的头像地址
     const [isShowEmojis, setIsShowEmojis] = useState(false); // 是否显示表情
-    const self_userId = props.location.state.userInfo.userId; //本用户的id
+    const chat_userId = props.location.state.userInfo.userId; //聊天对象的id
     const chat_userInfo = props.location.state.userInfo;    //聊天对象的信息
     const chat_avatar = require(`../../assets/images/avatar/${chat_userInfo.avatar}.png`);//聊天对象的头像地址
     // 表情
@@ -34,8 +34,15 @@ const Chat = props => {
     // 页面加载完成
     useEffect(() => {
         getChatData();
-        socketInit();
     }, [])
+
+    useEffect(() => {
+        socketInit();
+    }, [state])
+
+    useEffect(() => {
+        updateRead();
+    }, [self_userInfo])
 
     useEffect(() => {
         // 滚动条滚到底部
@@ -58,11 +65,11 @@ const Chat = props => {
             method: "get",
             url: "/api/chat_init",
             params: {
-                userId: self_userId
+                userId: chat_userId
             }
         }).then(res => {
             if (res.data.status === 0) {
-                setChatList(res.data.chat_data);
+                // setChatList(res.data.chat_data);
                 setSelfUserInfo(res.data.self_userInfo);
                 setSelfAvatar(require(`../../assets/images/avatar/${res.data.self_userInfo.avatar}.png`))
             } else {
@@ -79,7 +86,7 @@ const Chat = props => {
             // 要发送的数据
             const sendData = {
                 from: self_userInfo.userId,
-                to: chat_userInfo.userId,
+                to: chat_userId,
                 chat_content: chatContent
             }
 
@@ -90,24 +97,46 @@ const Chat = props => {
         }
     }
 
-    // 初始化socketIo和接收消息
+    // socketIo接收消息
     const socketInit = () => {
-        // 初始化
-        socket.emit("init", self_userId);
+        let arr = state.chatList.filter(item => {
+            return (item.from === self_userInfo.userId && item.to === chat_userId)
+                || (item.to === self_userInfo.userId && item.from === chat_userId)
+        })
+        setChatList(arr.reverse());
 
-        // 接收消息
-        socket.on("message", data => {
-            let newData = JSON.parse(data);
-            setChatList([...chatList, newData]);
-            // 向useReducer存值
-            dispatch({ type: "addChatList", newChat: newData })
-        });
+        // socket.on("message", data => {
+        //     let newData = JSON.parse(data);
+        //     setChatList([...chatList, newData]);
+        // });
     }
 
 
     // 切换隐藏或显示表情
     const showEmojis = () => {
         setIsShowEmojis(!isShowEmojis);
+    }
+
+    // 更新未读信息，已进入聊天界面，将于此用户的聊天信息更新为已读
+    const updateRead = () => {
+        axios({
+            method: "get",
+            url: "/api/updateRead",
+            params: {
+                userId: chat_userId
+            }
+        }).then(res => {
+            // 更新useReducer中的chatList列表中的对应聊天的信息
+            if (res.data.status === 0) {
+                let newChatList = state.chatList;
+                newChatList.forEach(item => {
+                    if (item.from === chat_userId && item.to === self_userInfo.userId) {
+                        item.read = 1;
+                    }
+                })
+                dispatch({ type: "updateChatList", data: newChatList })
+            }
+        }).catch(err => console.log(err));
     }
 
     return (<div className="chat">

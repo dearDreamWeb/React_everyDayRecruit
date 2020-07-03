@@ -19,7 +19,7 @@ const ChatMessage = props => {
 
     useEffect(() => {
         initLastChatList();
-    }, [])
+    }, [state])
 
     // 初始化用户列表
     /**
@@ -48,20 +48,15 @@ const ChatMessage = props => {
             let unReadCount = 0
             // 遍历每个用户对的消息列表，记录未读数
             obj[key].forEach(item => {
-                if (item.read === 0) unReadCount++;
+                if (item.to === userInfo.userId && item.read === 0) unReadCount++;
             })
             obj[key][0].unReadCount = unReadCount
             arr.push(obj[key][0])
         }
-
         // 将去重得到的arr聊天列表，map遍历和userList列表中的数据作对比，找到对应的聊天用户的个人信息return合成
         arr = arr.map(item => {
             // 日期格式化一下
             item.created_time = moment(new Date(item.created_time)).format('YYYY-MM-DD HH:mm:ss');
-            // 当聊天内容长度超过10的时候，截取并加上...
-            if (item.chat_content.length > 10) {
-                item.chat_content = item.chat_content.slice(0, 9) + "..."
-            }
 
             // 判断出聊天用户的userId，userInfo.userId是本人的userId
             let userId = item.from === userInfo.userId ? item.to : item.from;
@@ -93,7 +88,14 @@ const ChatMessage = props => {
                                     alt="头像"
                                 />
                                 <div className="main">
-                                    <p className="content">{item.chat_content}</p>
+                                    <p className="content">
+                                    {/* 当聊天内容长度超过10的时候，截取并加上... */}
+                                        {
+                                            item.chat_content.length > 7
+                                                ? item.chat_content.slice(0, 7) + "..."
+                                                : item.chat_content
+                                        }
+                                    </p>
                                     <p className="userName">{item.userName}</p>
                                 </div>
                                 <div className="time_badge">

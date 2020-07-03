@@ -10,7 +10,6 @@ import axios from "axios";
 import { encrypt } from "../../rsa"; //rsa加密
 import { ContextData } from "../../useReducer";
 
-
 const Form = (props) => {
     const { dispatch } = useContext(ContextData);
     const [canvasCode, setCanvasCode] = useState(""); //canvas生成的验证码
@@ -31,7 +30,6 @@ const Form = (props) => {
 
                     // 把用户列表userList和聊天列表chatList给useReducer
                     dispatch({ type: "initData", userList: res.data.userList, chatList: res.data.chatList });
-                    
                 } else {
                     Toast.fail(res.data.message);
                 }

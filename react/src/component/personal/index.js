@@ -19,6 +19,8 @@ const Personal = props => {
         }).then(res => {
             if (res.data.status === 0) {
                 window.localStorage.removeItem("userInfo");
+                window.sessionStorage.removeItem("chatList");
+                window.sessionStorage.removeItem("userList");
                 Toast.success(res.data.message);
                 props.history.push("/login");
             }

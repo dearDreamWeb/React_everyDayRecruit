@@ -24,19 +24,20 @@ const NavFooter = props => {
 
     useEffect(() => {
         initBadgeCount();
-    }, [])
+    })
 
 
     // 初始化未读消息数
     const initBadgeCount = () => {
-        let num = 0
-        state.chatList.forEach(item => {
-            // console.log(item.read===0)
-            if (item.read === 0) {
-                num++;
-            }
-        })
-        setBadgeCount(num);
+        if (state.chatList) {
+            let num = 0;
+            state.chatList.forEach(item => {
+                if (item.to === props.userInfo.userId && item.read === 0) {
+                    num++;
+                }
+            })
+            setBadgeCount(num);
+        }
     }
 
     return (<div className="nav_footer">

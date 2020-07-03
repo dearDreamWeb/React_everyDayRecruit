@@ -8,6 +8,8 @@
       height: 30px;
     }
     .main {
+      flex-grow: 1;
+      flex-shrink: 1;
       padding-left: 10px;
       .content {
         font-size: 20px;
@@ -18,7 +20,9 @@
       }
     }
     .time_badge {
-      flex-grow: 1;
+      // flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 110px;
       text-align: right;
       .time {
         font-size: 10px;
